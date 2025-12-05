@@ -1,54 +1,85 @@
-// Main App: small landing page until full routing is implemented
-// TODO: replace static landing with Router and modular components
+// Main App component with navigation and routing
 
-import React from 'react';
+import React, { useState } from 'react';
+import './styles.css';
+import Dashboard from './components/Dashboard';
+import AddEntry from './components/AddEntry';
+import History from './components/History';
+import Profile from './components/Profile';
 
 export default function App() {
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [userId] = useState('675210a1b2c3d4e5f6789012'); // Mock user ID for development
+
+  const renderView = () => {
+    switch (currentView) {
+      case 'dashboard':
+        return <Dashboard userId={userId} />;
+      case 'add-entry':
+        return <AddEntry userId={userId} onSuccess={() => setCurrentView('dashboard')} />;
+      case 'history':
+        return <History userId={userId} />;
+      case 'profile':
+        return <Profile userId={userId} />;
+      default:
+        return <Dashboard userId={userId} />;
+    }
+  };
+
   return (
     <div className="app-root">
       <header className="nav">
         <div className="container nav-inner">
           <div className="logo">🌱 EcoTracker</div>
           <nav>
-            <a href="#features">Features</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <a
+              href="#dashboard"
+              className={currentView === 'dashboard' ? 'active' : ''}
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentView('dashboard');
+              }}
+            >
+              Dashboard
+            </a>
+            <a
+              href="#add-entry"
+              className={currentView === 'add-entry' ? 'active' : ''}
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentView('add-entry');
+              }}
+            >
+              Add Entry
+            </a>
+            <a
+              href="#history"
+              className={currentView === 'history' ? 'active' : ''}
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentView('history');
+              }}
+            >
+              History
+            </a>
+            <a
+              href="#profile"
+              className={currentView === 'profile' ? 'active' : ''}
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentView('profile');
+              }}
+            >
+              Profile
+            </a>
           </nav>
         </div>
       </header>
 
-      <main>
-        <section className="hero">
-          <div className="container">
-            <h1>Track your carbon footprint</h1>
-            <p className="lead">Log vehicle trips, single-use plastics, heating and tree planting — see your CO₂ impact.</p>
-            <a className="btn" href="#dashboard">Open Dashboard</a>
-          </div>
-        </section>
-
-        <section id="features" className="features container">
-          <h2>Core Features</h2>
-          <ul>
-            <li>Vehicle emissions by distance, vehicle & fuel type</li>
-            <li>Single-use plastics logging and impact</li>
-            <li>Tree planting offsets and planting calculator</li>
-            <li>Residential heating (kWh & fuel types)</li>
-          </ul>
-        </section>
-
-        <section id="about" className="container about">
-          <h2>About</h2>
-          <p>EcoTracker helps you understand and reduce your carbon footprint with easy logging, analytics and suggestions.</p>
-        </section>
-
-        <section id="contact" className="container contact">
-          <h2>Contact</h2>
-          <p>support@ecotracker.local</p>
-        </section>
-      </main>
+      <main>{renderView()}</main>
 
       <footer className="footer">
-        <div className="container">© 2025 EcoTracker</div>
+        <div className="container">© 2025 EcoTracker - Track your carbon footprint</div>
       </footer>
     </div>
   );
