@@ -1,7 +1,7 @@
 // Controller for activity logging and analytics
 // TODO: validate incoming payloads, compute CO2 with calculator, save logs
 
-const Entry = require('../models/Entry');
+const Activity = require('../models/Activity');
 const calculator = require('../services/calculator');
 const exporter = require('../services/exporter');
 
@@ -42,7 +42,7 @@ exports.createLog = async (req, res) => {
 
     // Attempt to save to DB, but don't fail if DB is unavailable
     try {
-      const saved = await Entry.create(entry);
+      const saved = await Activity.create(entry);
       return res.json({ saved, co2_estimate: entry.co2_estimate });
     } catch (saveErr) {
       // DB not available or save failed — return computed result
@@ -62,7 +62,7 @@ exports.analytics = async (req, res) => {
   try {
     // Try to aggregate from DB
     try {
-      const series = await Entry.aggregate([
+      const series = await Activity.aggregate([
         { $match: userId ? { userId: require('mongoose').Types.ObjectId(userId) } : {} },
         { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$timestamp' } }, total: { $sum: '$co2_estimate' } } },
         { $sort: { _id: 1 } }

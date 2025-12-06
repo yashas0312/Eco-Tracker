@@ -166,7 +166,8 @@
     - _Requirements: 2.1, 2.2, 2.4, 5.3, 5.5_
 
 - [ ] 8. Build History component with data visualization
-  - [ ] 8.1 Create History component layout
+  - [x] 8.1 Create History component layout
+
     - Fetch historical data from GET /api/entries/history
 
     - Fetch weekly analytics from GET /api/analytics/weekly
@@ -200,6 +201,8 @@
     - _Requirements: 8.4_
 
 - [x] 9. Build Profile component
+
+
 
   - [ ] 9.1 Create Profile component with lifetime statistics
     - Fetch user profile from GET /api/user/profile
