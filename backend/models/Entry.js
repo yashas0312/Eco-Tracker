@@ -1,49 +1,34 @@
-const mongoose = require('mongoose');
+// backend/models/Entry.js
+const mongoose = require("mongoose");
 
 const EntrySchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-    index: true
-  },
-  type: {
-    type: String,
-    enum: ['vehicle', 'plastic', 'energy', 'plantation'],
-    required: true
-  },
-  date: {
-    type: Date,
-    required: true,
-    default: Date.now,
-    index: true
-  },
-  co2Emissions: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  co2Offset: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  ecoPointsEarned: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  details: {
-    type: mongoose.Schema.Types.Mixed,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  type: { type: String, required: true }, // vehicle, plastic, energy, plantation
+
+  // VEHICLE FIELDS
+  vehicleType: String,
+  fuelType: String,
+  yearOfRegistration: Number,
+  petrolPressStd: Number,
+  petrolMeasured: Number,
+  distance: Number,             // already needed
+  mileage: Number,              // optional if you want
+  engineSize: Number,
+
+  // PLASTIC FIELDS
+  itemType: String,
+  numberOfItems: Number,
+
+  // ENERGY FIELDS
+  energyType: String,
+  unitsConsumed: Number,
+
+  // PLANTATION FIELDS
+  treeSpecies: String,
+  numberOfTrees: Number,
+
+  // COMMON
+  co2: Number,
+  createdAt: { type: Date, default: Date.now }
 });
 
-EntrySchema.index({ userId: 1, date: -1 });
-EntrySchema.index({ userId: 1, type: 1 });
-
-module.exports = mongoose.model('Entry', EntrySchema);
+module.exports = mongoose.model("Entry", EntrySchema);
