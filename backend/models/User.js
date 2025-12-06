@@ -1,5 +1,3 @@
-// Mongoose schema for User with lifetime statistics tracking
-
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -33,7 +31,6 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt timestamp before saving
 UserSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();

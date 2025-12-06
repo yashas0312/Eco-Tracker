@@ -1,20 +1,11 @@
-// AnalyticsService for aggregating and analyzing historical data
-
 const Entry = require('../models/Entry');
 const mongoose = require('mongoose');
 
 class AnalyticsService {
-  /**
-   * Get weekly aggregated data
-   * @param {string} userId - User ID
-   * @param {number} weeks - Number of weeks to fetch (default: 12)
-   * @returns {Promise<Array>} - Array of weekly data
-   */
   static async getWeeklyData(userId, weeks = 12) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - (weeks * 7));
 
-    // Aggregate entries by week
     const weeklyData = await Entry.aggregate([
       {
         $match: {
@@ -49,12 +40,6 @@ class AnalyticsService {
     }));
   }
 
-  /**
-   * Calculate percentage change between two values
-   * @param {number} current - Current value
-   * @param {number} previous - Previous value
-   * @returns {number} - Percentage change
-   */
   static calculatePercentageChange(current, previous) {
     if (previous === 0) {
       return current > 0 ? 100 : 0;
@@ -62,13 +47,6 @@ class AnalyticsService {
     return parseFloat((((current - previous) / previous) * 100).toFixed(1));
   }
 
-  /**
-   * Get breakdown by category
-   * @param {string} userId - User ID
-   * @param {Date} startDate - Start date
-   * @param {Date} endDate - End date
-   * @returns {Promise<Array>} - Array of category breakdowns
-   */
   static async getCategoryBreakdown(userId, startDate, endDate) {
     const breakdown = await Entry.aggregate([
       {
@@ -95,13 +73,7 @@ class AnalyticsService {
     }));
   }
 
-  /**
-   * Get dashboard summary statistics
-   * @param {string} userId - User ID
-   * @returns {Promise<Object>} - Summary statistics
-   */
   static async getDashboardSummary(userId) {
-    // Get all entries for the user
     const entries = await Entry.find({ userId: mongoose.Types.ObjectId(userId) });
 
     const totalEmissions = entries.reduce((sum, entry) => sum + entry.co2Emissions, 0);
@@ -121,12 +93,6 @@ class AnalyticsService {
     };
   }
 
-  /**
-   * Get recent entries (last 7 days)
-   * @param {string} userId - User ID
-   * @param {number} days - Number of days (default: 7)
-   * @returns {Promise<Array>} - Array of recent entries
-   */
   static async getRecentEntries(userId, days = 7) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);

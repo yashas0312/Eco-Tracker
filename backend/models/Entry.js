@@ -1,6 +1,3 @@
-// Mongoose schema for Entry (carbon footprint entries)
-// Supports vehicle, plastic, energy, and plantation entries
-
 const mongoose = require('mongoose');
 
 const EntrySchema = new mongoose.Schema({
@@ -46,7 +43,6 @@ const EntrySchema = new mongoose.Schema({
   }
 });
 
-// Compound index for efficient queries
 EntrySchema.index({ userId: 1, date: -1 });
 EntrySchema.index({ userId: 1, type: 1 });
 

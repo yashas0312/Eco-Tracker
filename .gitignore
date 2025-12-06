@@ -1,9 +1,45 @@
+# Node
 node_modules/
+npm-debug.log
+yarn.lock
+
+# Build outputs
 dist/
 build/
-.env
-.DS_Store
-venv/
+.cache/
+.tmp/
+out/
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ML service outputs
+ml_service/model/
+ml_service/*.csv
+
+# Kiro / Copilot artifacts
+.kiro/
+
+# Logs
+logs/
+*.log
+
+# Dependencies or temp folders
+frontend/node_modules/
+backend/node_modules/
+
