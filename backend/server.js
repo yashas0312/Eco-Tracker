@@ -1,30 +1,25 @@
-// Express server bootstrap
-// TODO: wire routes, auth middleware, and error handling
-
+// backend/server.js
+require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const apiRoutes = require('./routes/api');
-const connectDB = require('./config/db');
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors());             // allow frontend requests
+app.use(express.json());     // parse JSON bodies
 
-// Connect to DB only when a MONGO_URI is provided. This avoids startup failures
-// on machines without MongoDB during early development.
-if (process.env.MONGO_URI) {
-	try {
-		connectDB();
-	} catch (err) {
-		console.error('DB connect call failed:', err);
-	}
-} else {
-	console.log('MONGO_URI not set — skipping DB connection (set MONGO_URI to enable DB)');
-}
+// ------------- Connect to MongoDB -------------
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ecotracke';
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => {
+    console.error('MongoDB connect error:', err);
+    process.exit(1);
+  });
 
-// API routes
-app.use('/api', apiRoutes);
+// ------------- Routes -------------
+app.use('/api', require('./routes/api')); // mount main API routes
 
+// ------------- Start Server -------------
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server listening on ${PORT}`));

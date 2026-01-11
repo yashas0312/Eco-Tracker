@@ -1,15 +1,15 @@
 /**
- * AddEntry Component with Quick History and Preview CO2
+ * AddEntry Component with Preview CO2
  * Author: EcoTracker Team
  * Date: 2025-12-06
- * Purpose: Form tabs for logging entries + Quick History
+ * Purpose: Form tabs for logging entries
  * TODOs:
  * - Replace userId=1 with auth context
  * - Add real-time validation feedback
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { postLog, calcCO2, getAnalytics } from '../services/api';
+import { postLog, calcCO2 } from '../services/api';
 
 export default function AddEntry({ userId }) {
   // TODO: Replace with auth context
@@ -17,9 +17,6 @@ export default function AddEntry({ userId }) {
 
   const [activeTab, setActiveTab] = useState('vehicle');
   const [loading, setLoading] = useState(false);
-
-  // Quick History state
-  const [recentEntries, setRecentEntries] = useState([]);
 
   // Vehicle form state
   const [vehicleData, setVehicleData] = useState({
@@ -61,23 +58,6 @@ export default function AddEntry({ userId }) {
     peepal: { name: 'Peepal', co2: 28 },
     banyan: { name: 'Banyan', co2: 21 },
     teak: { name: 'Teak', co2: 18 }
-  };
-
-  // Load Quick History on mount
-  useEffect(() => {
-    loadQuickHistory();
-  }, [currentUserId]);
-
-  const loadQuickHistory = async () => {
-    try {
-      const data = await getAnalytics(currentUserId);
-      // Show only 5 most recent entries
-      const recent = (data.chart || []).slice(-5).reverse();
-      setRecentEntries(recent);
-    } catch (err) {
-      console.error('Failed to load quick history:', err);
-      // Fail gracefully - don't show error toast for background load
-    }
   };
 
   const handlePreviewCO2 = async (type, payload) => {
@@ -126,9 +106,6 @@ export default function AddEntry({ userId }) {
       const result = await postLog(currentUserId, type, payload);
       
       toast.success(`✅ Entry logged! CO₂: ${result.co2_estimate?.toFixed(2) || 0} kg`);
-      
-      // Refresh Quick History
-      loadQuickHistory();
 
       // Reset form
       if (type === 'vehicle') setVehicleData({ km: '', vehicle_type: 'car', fuel_type: 'petrol', year_of_registration: '', press_std: '', measured_level: '' });
@@ -160,9 +137,6 @@ export default function AddEntry({ userId }) {
             </button>
             <button className={`tab-btn ${activeTab === 'trees' ? 'active' : ''}`} onClick={() => setActiveTab('trees')}>
               🌳 Plantations
-            </button>
-            <button className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>
-              📊 Quick History
             </button>
           </div>
 
@@ -422,35 +396,6 @@ export default function AddEntry({ userId }) {
                 </button>
               </div>
             </form>
-          )}
-
-          {/* Quick History Tab */}
-          {activeTab === 'history' && (
-            <div>
-              <h3 className="mb-3">Recent Entries (Last 5)</h3>
-              {recentEntries.length === 0 ? (
-                <div className="fallback">
-                  <p>No entries yet. Start logging to see your history!</p>
-                </div>
-              ) : (
-                <table className="card" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid var(--light-gray)' }}>
-                      <th style={{ padding: '0.75rem', textAlign: 'left' }}>Date</th>
-                      <th style={{ padding: '0.75rem', textAlign: 'right' }}>CO₂ (kg)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentEntries.map((entry, idx) => (
-                      <tr key={idx} style={{ borderBottom: '1px solid var(--light-gray)' }}>
-                        <td style={{ padding: '0.75rem' }}>{entry.date}</td>
-                        <td style={{ padding: '0.75rem', textAlign: 'right' }}>{entry.co2?.toFixed(2) || 0}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
           )}
         </div>
       </div>

@@ -201,3 +201,34 @@ exports.getRecentEntries = async (req, res) => {
 };
 
 module.exports = exports;
+
+
+/**
+ * Export user data as CSV
+ * GET /api/export?userId=...
+ */
+exports.exportCSV = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required parameter: userId'
+      });
+    }
+
+    // For now, return a simple CSV with headers
+    const csv = 'Date,Type,CO2 (kg),Details\n';
+    
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=ecotracker-export.csv');
+    return res.send(csv);
+  } catch (err) {
+    console.error('exportCSV error:', err);
+    return res.status(500).json({
+      success: false,
+      error: err.message || 'Internal server error'
+    });
+  }
+};
